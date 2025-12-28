@@ -64,3 +64,4 @@ func TestFileManagerClient_API(t *testing.T) {
 		t.Fatalf("DeleteFile (API) failed: %v", err)
 	}
 }
+

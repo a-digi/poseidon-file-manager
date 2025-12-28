@@ -1,4 +1,3 @@
-// Package filemanager provides file management utilities for Poseidon plugins.
 package filemanager
 
 import (
@@ -35,22 +34,22 @@ type getPathResponse struct {
 	Path string `json:"path"`
 }
 
-// CreateFile creates a new file with the given name and content.
+// CreateFile creates a new file with the given name and content (local filesystem).
 func CreateFile(filename string, content []byte) error {
 	return ioutil.WriteFile(filename, content, 0644)
 }
 
-// ReadFile reads the content of the specified file.
+// ReadFile reads the content of the specified file (local filesystem).
 func ReadFile(filename string) ([]byte, error) {
 	return ioutil.ReadFile(filename)
 }
 
-// DeleteFile deletes the specified file.
+// DeleteFile deletes the specified file (local filesystem).
 func DeleteFile(filename string) error {
 	return os.Remove(filename)
 }
 
-// CreateFileViaAPI creates a file via the HTTP API.
+// CreateFile creates a file via the HTTP API.
 func (c *FileManagerClient) CreateFile(pluginName, filename, content string) error {
 	url := baseURL + "/api/plugins/file-manager/create"
 	body, _ := json.Marshal(createFileRequest{pluginName, filename, content})
@@ -63,11 +62,10 @@ func (c *FileManagerClient) CreateFile(pluginName, filename, content string) err
 		respBody, _ := ioutil.ReadAll(resp.Body)
 		return fmt.Errorf("create file failed: %s", string(respBody))
 	}
-
 	return nil
 }
 
-// DeleteFileViaAPI deletes a file via the HTTP API.
+// DeleteFile deletes a file via the HTTP API.
 func (c *FileManagerClient) DeleteFile(pluginName, filename string) error {
 	url := baseURL + "/api/plugins/file-manager/delete"
 	body, _ := json.Marshal(deleteFileRequest{pluginName, filename})
@@ -100,5 +98,6 @@ func (c *FileManagerClient) GetFilePath(pluginName, filename string) (string, er
 	if err := json.NewDecoder(resp.Body).Decode(&res); err != nil {
 		return "", err
 	}
+
 	return res.Path, nil
 }
